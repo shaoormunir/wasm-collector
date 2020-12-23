@@ -2,6 +2,7 @@ const fs = require("fs");
 const crypto = require("crypto");
 const dfd = require("danfojs-node");
 const puppeteer = require("puppeteer");
+const tqdm = require("ntqdm");
 const { Console } = require("console");
 
 const directory = "./wasm/";
@@ -29,16 +30,21 @@ function wasmFound(data, sitename) {
 }
 
 
-dfd.read_csv("cleaned_list.csv", chunk = 10).then(async df => {
+dfd.read_csv("cleaned_list.csv").then(async df => {
     let values = df.values;
-    for (let index = 0; index < values.length; index++) {
-        let sitename = values[index][1];
+
+    for (let i of tqdm(values)) {
+        let sitename = i[1];
         console.log("Processing site: " + sitename);
         await getWasm(sitename).then(console.log("Finished processing site: " + sitename)).catch(err => {
             console.log("Error processing site: " + sitename);
             console.log(err);
         });
     }
+    // for (let index = 0; index < values.length; index++) {
+    //     let sitename = values[index][1];
+
+    // }
 }).catch(err => {
     console.log(err);
 })
