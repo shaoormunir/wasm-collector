@@ -12,7 +12,7 @@
         let old = {};
         function wrap(name) {
             old[name] = WebAssembly[name];
-            WebAssembly[name] = function(bufferSource) {
+            WebAssembly[name] = function (bufferSource) {
                 wasmFound(bufferToBase64(bufferSource));
                 return old[name].call(WebAssembly, ...arguments);
             };
@@ -21,13 +21,13 @@
         wrap("compile");
     })();
 
-    WebAssembly.instantiateStreaming = async function(source, importObject) {
+    WebAssembly.instantiateStreaming = async function (source, importObject) {
         let response = await source;
         let body = await response.arrayBuffer();
         return WebAssembly.instantiate(body, importObject);
     };
 
-    WebAssembly.compileStreaming = async function(source) {
+    WebAssembly.compileStreaming = async function (source) {
         let response = await source;
         let body = await response.arrayBuffer();
         return WebAssembly.compile(body);
